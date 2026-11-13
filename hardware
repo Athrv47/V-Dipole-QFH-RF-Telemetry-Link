@@ -13,4 +13,4 @@
 ### 3. Software-Defined Radio (SDR) Toolchain
 The platform interfaces antennas with high-flexibility SDR hardware:
 * **Pluto SDR**, **HackRF One**, and **USRP B200 Mini**[cite: 3, 4].
-* Tunable frequency range handling VHF observations around **135.6 MHz** and **137–138 MHz**[cite: 4, 9].
+* Tunable frequency range handling VHF observations around **135.6 MHz** and **137–138 MHz**[cite: 4, 9]. 
