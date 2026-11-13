@@ -1,16 +1,30 @@
 ## 🛠️ Hardware Components & Fabrication
 
+A theoretical account of the antennas and RF front-end used for the telemetry link. For the build photographs and workshop video, see [Construction.md](Construction.md); the complete engineering report with measurements and test tables is in [GS (3).pdf](<GS (3).pdf>).
+
 ### 1. V-Dipole Antenna (VHF Reception)
-* **Design Purpose:** Selected as the primary baseline antenna due to its simple geometry, ease of fabrication, and rapid lab tunability.
-* **Performance:** Evaluated in close-range controlled testing, achieving a clean audio reception with an observed **SNR of ~71 dB**. Tested across varying distances and off-axis orientations to characterize signal attenuation.
-* *[Insert photo of V-Dipole antenna build here]*
+
+**Design basis.** A half-wave dipole is the simplest resonant radiator for VHF work: two collinear elements, each a quarter wavelength long, fed at the centre. At the target 137 MHz weather-satellite band, λ ≈ c/f ≈ 2.19 m, so each arm is cut to roughly λ/4 ≈ 0.55 m — a total span of about λ/2 ≈ 1.1 m. The V-dipole was chosen precisely because of its simple geometry, low cost, ease of fabrication and rapid lab tunability, making it the correct baseline before committing to more elaborate structures. In close-range controlled testing it delivered an observed **SNR of ~71 dB** — a test measurement, not a rated specification; the ratio degrades with distance, off-axis orientation and environment.
+
+**Fabrication.** The elements were formed from circular copper wire worked entirely by hand: the wire was beaten into the required profile with a mallet rather than machined, then cut to the calculated length requirements with pliers. The finished element is a purely hand-built antenna — no commercial antenna parts, just raw copper stock shaped on the workshop floor.
 
 ### 2. Quadrifilar Helix (QFH) Antenna (Circular Polarization)
-* **Design Purpose:** Constructed to provide circular polarization, optimizing reception for overhead satellite passes compared to linear dipoles.
-* **Bidirectional Link Testing:** Paired with the V-Dipole in controlled two-way transmit-receive tests (QFH $\rightarrow$ V-Dipole and V-Dipole $\rightarrow$ QFH) to verify functional RF links in both configurations.
-* *[Insert photo of QFH antenna build here]*
 
-### 3. Software-Defined Radio (SDR) Toolchain
-The platform interfaces antennas with high-flexibility SDR hardware:
-* **Pluto SDR**, **HackRF One**, and **USRP B200 Mini**.
-* Tunable frequency range handling VHF observations around **135.6 MHz** and **137–138 MHz**.
+**Design basis.** A quadrifilar helix is a set of four helical elements wound on a common cylinder, with adjacent elements driven 90° apart in phase. Correct phasing produces a near-circularly-polarized wavefront radiating along the cylinder axis — matching the right-hand circular polarization of NOAA/Meteor downlinks and suppressing the cross-polarized multipath that a linear dipole cannot reject. The QFH was therefore built as the satellite-optimized counterpart to the V-dipole.
+
+**Fabrication.** The helix was shaped by the same hand process as the dipole: starting from circular copper wire stock, the bends were beaten progressively into form with a mallet until the turns ran uniform around the axis, and the ends were cut to length with pliers. Even hand-shaping matters here — asymmetry between the four arms shifts the axial ratio and de-tunes the phasing, so the elements were worked until the helix stood true around its centre.
+
+**Bidirectional link testing.** The QFH and V-dipole were used as a two-way transmit–receive pair in both configurations (QFH → V-dipole and V-dipole → QFH). Audio passed in both directions, confirming a functional RF link either way, with audible noise and latency that are still being characterized and fixed (buffering, gain distribution, local RF environment).
+
+### 3. Makeshift Stand
+
+To hold the work and the antennas at a usable height during forming, cutting and handling, we improvised a stand from a cardboard roll. The roll was marked out and cut down with a handsaw to the required size, serving as a lightweight mechanical support during the build. It is a fabrication aid only — not part of the RF path.
+
+### 4. Software-Defined Radio Front-End
+
+The antennas terminate into SDRs, the bridge between RF and the digital chain:
+
+* **HackRF One** — the SDR used for the live audio-telemetry link work; an open 1–6000 MHz transceiver well suited to VHF experiments and to driving custom GNU Radio flowgraphs around 135.6 MHz and the 137–138 MHz band.
+* **Pluto SDR** and **USRP B200 Mini** — alternative platforms on the system, exercised during development for comparative testing across software environments.
+
+See [Construction.md](Construction.md) for photographs and video of the fabrication process, and [GS (3).pdf](<GS (3).pdf>) for the full report.
