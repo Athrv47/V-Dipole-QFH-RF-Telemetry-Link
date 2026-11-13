@@ -41,4 +41,4 @@ STK is used for mission and orbit visualization — the 3D geometry of a pass, g
 
 The decode end of the chain. SatDump handles demodulation, framing and protocol-specific decoding once a signal is captured; WXtoImg converts the resulting data into imagery. The decoding workflow was validated offline against a pre-recorded NOAA transmission sourced from a SatNogs observation — a dry run that proved the software chain end-to-end short of a live capture by our own antenna.
 
-See [GNU Flowchart.md](GNU%20Flowchart.md) for the AM/FM transmit flowgraphs shown in the repo, and [GS (3).pdf](<GS (3).pdf>) for the full experimental report and results.
+See [GNU Flowchart.md] for the AM/FM transmit flowgraphs shown in the repo, and [GS (3).pdf] for the full experimental report and results.
