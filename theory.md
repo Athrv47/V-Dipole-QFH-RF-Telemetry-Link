@@ -195,14 +195,11 @@ Targets: keep SWR ≤ 1.5:1 from 137–138 MHz, i.e. |Γ| ≤ 0.2 (mismatch loss
 
 ## 13. References
 
-<<<<<<< HEAD
 - [GS (3).pdf](<GS (3).pdf>) — project report
 - [Construction.md](Construction.md) — build photos and video
-=======
 - [GS (3).pdf](<GS (3).pdf>) — project report (Megha Jha, ECE, Central University of Jammu)
 - DIY 137MHz WX-sat V-dipole antenna — Adam-9A4QV — dipole cut formula (147/F), 120° wings, polarization/RFI analysis, 22 dB threshold, pass tables
 - NOAA Satellite Signals with a PVC QFH Antenna — spacemanlabs — QFH geometry (jcoppens calculator), PVC build workflow, wiring, software chain (GPredict / GQRX / sox / WXtoImg), 9° horizon threshold
 - [Construction.md](Construction.md) — build photos and videos
->>>>>>> 589a8a9 (Update theory.md with reference design values from build guides)
 - [GNU Flowchart.md](GNU%20Flowchart.md) — AM/FM transmit flowgraphs
 - [hardware](hardware) / [software](software) / [results](results) — hardware/software/methodology notes
