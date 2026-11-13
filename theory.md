@@ -182,18 +182,7 @@ Targets: keep SWR ≤ 1.5:1 from 137–138 MHz, i.e. |Γ| ≤ 0.2 (mismatch loss
 | Offline decode | Successful on pre-recorded NOAA file (SatNogs) |
 | Live satellite pass | Not yet achieved |
 
-## 12. Open questions / things to refine
-
-- [ ] Exact dimensions actually cut (dipole arms: 53.4 cm reference, minus feedtail; QFH: 292 / 276.1 / 115.4 / 107.6 mm reference — what did we actually cut?)
-- [ ] Measured SWR of both antennas at 137 MHz
-- [ ] Feedline type, length, feedpoint impedance (choc-block vs direct solder)
-- [ ] Latency vs buffer size / sample rate
-- [ ] Dominant noise source in the two-way tests (aeronautical AM, ORBCOMM, USB clock?)
-- [ ] QFH axial-ratio estimate from two-direction link test
-- [ ] Doppler compensation plan for the first live pass
-- [ ] Measured gain/SNR vs elevation on a real pass vs 22 dB threshold
-
-## 13. References
+## 12. References
 
 - [GS (3).pdf](<GS (3).pdf>) — project report
 - [Construction.md](Construction.md) — build photos and video
