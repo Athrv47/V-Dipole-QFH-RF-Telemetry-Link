@@ -1,13 +1,13 @@
 ## 📊 Experimental Methodology & Results
 
-1. **V-Dipole Audio Link:** Successfully demonstrated close-range audio reception with ~71 dB SNR; verified intelligible audio performance across extended distances and physical orientation shifts[cite: 9].
-2. **Bidirectional QFH/V-Dipole Test:** Established a functional two-way link in both configurations, identifying baseline software buffering delays and local RF noise vectors[cite: 5, 9].
-3. **Offline NOAA Decoding Trial:** Executed a complete software dry-run using pre-recorded NOAA/Meteor audio files processed through SatDump/WXtoImg to validate the digital decoding chain prior to live capture[cite: 8, 10].
+1. **V-Dipole Audio Link:** Successfully demonstrated close-range audio reception with ~71 dB SNR; verified intelligible audio performance across extended distances and physical orientation shifts.
+2. **Bidirectional QFH/V-Dipole Test:** Established a functional two-way link in both configurations, identifying baseline software buffering delays and local RF noise vectors.
+3. **Offline NOAA Decoding Trial:** Executed a complete software dry-run using pre-recorded NOAA/Meteor audio files processed through SatDump/WXtoImg to validate the digital decoding chain prior to live capture.
 
 ---
 
 ## ⚠️ Current Challenges & Technical Roadmap
 
-* **Noise Mitigation:** Investigating local RF interference, SDR gain optimization, cable losses, and impedance mismatches to improve signal margins[cite: 12].
-* **Latency Optimization:** Analyzing software buffer sizes and sample rates across GNU Radio pipelines to eliminate audio processing delays[cite: 12].
-* **Live Satellite Interception:** Moving from controlled local tests to full live-pass telemetry capture, incorporating real-time Doppler shift compensation and automated pass scheduling[cite: 12, 13].
+* **Noise Mitigation:** Investigating local RF interference, SDR gain optimization, cable losses, and impedance mismatches to improve signal margins.
+* **Latency Optimization:** Analyzing software buffer sizes and sample rates across GNU Radio pipelines to eliminate audio processing delays.
+* **Live Satellite Interception:** Moving from controlled local tests to full live-pass telemetry capture, incorporating real-time Doppler shift compensation and automated pass scheduling.
