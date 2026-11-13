@@ -186,7 +186,7 @@ Targets: keep SWR ≤ 1.5:1 from 137–138 MHz, i.e. |Γ| ≤ 0.2 (mismatch loss
 
 - [GS (3).pdf](<GS (3).pdf>) — project report
 - [Construction.md](Construction.md) — build photos and video
-- [GS (3).pdf](<GS (3).pdf>) — project report (Megha Jha, ECE, Central University of Jammu)
+- [GS (3).pdf](<GS (3).pdf>) — project report
 - [Construction.md](Construction.md) — build photos and videos
 - [GNU Flowchart.md](GNU%20Flowchart.md) — AM/FM transmit flowgraphs
 - [hardware](hardware) / [software](software) / [results](results) — hardware/software/methodology notes
