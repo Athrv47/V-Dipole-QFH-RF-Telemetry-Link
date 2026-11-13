@@ -27,4 +27,4 @@ The antennas terminate into SDRs, the bridge between RF and the digital chain:
 * **HackRF One** — the SDR used for the live audio-telemetry link work; an open 1–6000 MHz transceiver well suited to VHF experiments and to driving custom GNU Radio flowgraphs around 135.6 MHz and the 137–138 MHz band.
 * **Pluto SDR** and **USRP B200 Mini** — alternative platforms on the system, exercised during development for comparative testing across software environments.
 
-See [Construction.md](Construction.md) for photographs and video of the fabrication process, and [GS (3).pdf](<GS (3).pdf>) for the full report.
+See [Construction.md] for photographs and video of the fabrication process, and [GS (3).pdf] for the full report.
