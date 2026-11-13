@@ -1,11 +1,3 @@
-# theory
-
-Initial material — **draft for refinement**. Background theory and calculations for the RF ground station and telemetry link, drawn from the project report ([GS (3).pdf](<GS (3).pdf>)) plus standard antenna/RF formulas. Measured numbers from the report are quoted as test values, not specs.
-
-For the build see [Construction.md](Construction.md), for the flowgraphs see [GNU Flowchart.md](GNU%20Flowchart.md), for fabrication/software notes see [hardware](hardware) and [software](software).
-
----
-
 ## 1. Wavelength and band geometry
 
 The VHF band targeted is ~135–138 MHz, centred on the weather-satellite allocation.
@@ -147,7 +139,7 @@ Practical fixes: 50 Ω everywhere, short good feedline, solid joints, ferrite ch
 
 ## 13. References
 
-- [GS (3).pdf](<GS (3).pdf>) — project report (Megha Jha, ECE, Central University of Jammu)
+- [GS (3).pdf](<GS (3).pdf>) — project report
 - [Construction.md](Construction.md) — build photos and video
 - [GNU Flowchart.md](GNU%20Flowchart.md) — AM/FM transmit flowgraphs
 - [hardware](hardware) / [software](software) / [results](results) — hardware, software and methodology notes
