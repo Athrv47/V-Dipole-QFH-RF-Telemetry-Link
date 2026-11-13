@@ -1,14 +1,3 @@
-Initial material — **draft for refinement**. Background theory and calculations for the RF ground station and telemetry link, drawn from the project report ([GS (3).pdf](<GS (3).pdf>)) and from the two reference guides used for the builds:
-
-- **DIY 137 MHz WX-sat V-dipole** (Adam-9A4QV) — the V-dipole reference
-- **NOAA Satellite Signals with a PVC QFH Antenna** (spacemanlabs / instructables) — the QFH reference (137.5 MHz design)
-
-Numbers from the report are single-test values, not specs. Dimensions from the guides are the 137.5 MHz reference values; scale/verify cut lengths for the exact operating frequency.
-
-For the build see [Construction.md](Construction.md), for the flowgraphs see [GNU Flowchart.md](GNU%20Flowchart.md), for fabrication/software notes see [hardware](hardware) and [software](software).
-
----
-
 ## 1. Wavelength, frequency and band plan
 
 $$\lambda = \frac{c}{f}, \qquad c = 3\times10^8 \text{ m/s}$$
