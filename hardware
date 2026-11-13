@@ -1,16 +1,16 @@
 ## 🛠️ Hardware Components & Fabrication
 
 ### 1. V-Dipole Antenna (VHF Reception)
-* **Design Purpose:** Selected as the primary baseline antenna due to its simple geometry, ease of fabrication, and rapid lab tunability[cite: 4].
-* **Performance:** Evaluated in close-range controlled testing, achieving a clean audio reception with an observed **SNR of ~71 dB**[cite: 4, 9]. Tested across varying distances and off-axis orientations to characterize signal attenuation[cite: 9].
+* **Design Purpose:** Selected as the primary baseline antenna due to its simple geometry, ease of fabrication, and rapid lab tunability.
+* **Performance:** Evaluated in close-range controlled testing, achieving a clean audio reception with an observed **SNR of ~71 dB**. Tested across varying distances and off-axis orientations to characterize signal attenuation.
 * *[Insert photo of V-Dipole antenna build here]*
 
 ### 2. Quadrifilar Helix (QFH) Antenna (Circular Polarization)
-* **Design Purpose:** Constructed to provide circular polarization, optimizing reception for overhead satellite passes compared to linear dipoles[cite: 5].
-* **Bidirectional Link Testing:** Paired with the V-Dipole in controlled two-way transmit-receive tests (QFH $\rightarrow$ V-Dipole and V-Dipole $\rightarrow$ QFH) to verify functional RF links in both configurations[cite: 5, 9].
+* **Design Purpose:** Constructed to provide circular polarization, optimizing reception for overhead satellite passes compared to linear dipoles.
+* **Bidirectional Link Testing:** Paired with the V-Dipole in controlled two-way transmit-receive tests (QFH $\rightarrow$ V-Dipole and V-Dipole $\rightarrow$ QFH) to verify functional RF links in both configurations.
 * *[Insert photo of QFH antenna build here]*
 
 ### 3. Software-Defined Radio (SDR) Toolchain
 The platform interfaces antennas with high-flexibility SDR hardware:
-* **Pluto SDR**, **HackRF One**, and **USRP B200 Mini**[cite: 3, 4].
-* Tunable frequency range handling VHF observations around **135.6 MHz** and **137–138 MHz**[cite: 4, 9]. 
+* **Pluto SDR**, **HackRF One**, and **USRP B200 Mini**.
+* Tunable frequency range handling VHF observations around **135.6 MHz** and **137–138 MHz**.
