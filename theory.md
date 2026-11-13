@@ -1,45 +1,116 @@
-## 1. Wavelength and band geometry
+Initial material — **draft for refinement**. Background theory and calculations for the RF ground station and telemetry link, drawn from the project report ([GS (3).pdf](<GS (3).pdf>)) and from the two reference guides used for the builds:
 
-The VHF band targeted is ~135–138 MHz, centred on the weather-satellite allocation.
+- **DIY 137 MHz WX-sat V-dipole** (Adam-9A4QV) — the V-dipole reference
+- **NOAA Satellite Signals with a PVC QFH Antenna** (spacemanlabs / instructables) — the QFH reference (137.5 MHz design)
+
+Numbers from the report are single-test values, not specs. Dimensions from the guides are the 137.5 MHz reference values; scale/verify cut lengths for the exact operating frequency.
+
+For the build see [Construction.md](Construction.md), for the flowgraphs see [GNU Flowchart.md](GNU%20Flowchart.md), for fabrication/software notes see [hardware](hardware) and [software](software).
+
+---
+
+## 1. Wavelength, frequency and band plan
 
 $$\lambda = \frac{c}{f}, \qquad c = 3\times10^8 \text{ m/s}$$
 
-| Frequency | λ | λ/2 | λ/4 |
-| :--- | :--- | :--- | :--- |
-| 135.6 MHz (local obs) | 2.212 m | 1.106 m | 0.553 m |
-| 137.0 MHz (nominal) | 2.190 m | 1.095 m | 0.547 m |
-| 137.1 MHz (obs) | 2.188 m | 1.094 m | 0.547 m |
-| 137.9 MHz (obs) | 2.176 m | 1.088 m | 0.544 m |
+| Frequency | Use | λ | λ/2 | λ/4 |
+| :--- | :--- | :--- | :--- | :--- |
+| 135.6 MHz | local HackRF obs | 2.212 m | 1.106 m | 0.553 m |
+| 137.000 MHz | nominal | 2.190 m | 1.095 m | 0.547 m |
+| 137.100 MHz | NOAA-19 | 2.188 m | 1.094 m | 0.547 m |
+| 137.500 MHz | QFH design freq (ref) | 2.181 m | 1.092 m | 0.545 m |
+| 137.620 MHz | NOAA-15 | 2.176 m | 1.088 m | 0.544 m |
+| 137.900 MHz | METEOR M N2 / local obs | 2.176 m | 1.088 m | 0.544 m |
+| 137.9125 MHz | NOAA-18 | 2.176 m | 1.088 m | 0.544 m |
 
-Principle: antenna elements are resonated by cutting them to fractions of λ. Both the half-wave dipole and the QFH below are sized off this relation.
+### Interference environment in 137–138 MHz (per the V-dipole guide)
 
-## 2. Half-wave dipole (V-Dipole) theory
+| Signal | Frequency | Note |
+| :--- | :--- | :--- |
+| NOAA-15 | 137.620 MHz | APT |
+| NOAA-18 | 137.9125 MHz | APT |
+| NOAA-19 | 137.100 MHz | APT |
+| METEOR M N2 | 137.900 MHz | APT-class |
+| ORBCOMM | 137.560 MHz | strong, plus wideband 57k6 — sits just below NOAA-15 |
+| VDL MODE 2 | 136.975 MHz | aeronautical — don't confuse with NOAA-19 |
 
-Two collinear quarter-wave radiators fed at the centre:
+Propagation context: NOAA birds are near-polar LEO, so passes are northbound or southbound; a fixed N–S pointing dipole does not need a rotator. Expect ~2 good passes per satellite per day (≥ ~9 for three sats), up to ~10–15 minutes each, typically ≥ 20° max elevation with a visible window (our QFH guide found signal usable once above ~9°).
 
-$$L = \frac{\lambda}{2} = \frac{c}{2f}$$
+## 2. Half-wave dipole (V-Dipole) — design values used
 
-- **Feedpoint impedance** in free space ≈ **73 Ω** (so a 50 Ω coax is an acceptable, un-tuned mismatch for early experiments).
-- **Radiation pattern**: a donut — figure-of-8 in the E-plane (nulls along the element axis), omnidirectional in the H-plane.
-- **Gain** ≈ 2.15 dBi.
-- **Resonance**: the element carries a current standing wave with a node at each open end; that is what λ/4 arms do at frequency.
+The classic rule from the V-dipole guide (matches the standard 468/f in feet):
 
-Why V-Dipole as baseline: simplest geometry, easy to fabricate and tune in a lab, and the reference antenna against which the QFH is compared.
+$$L_{(m)} = \frac{147}{F_{(MHz)}} \;\Rightarrow\; L_{137.5} = \frac{147}{137.5} \approx 1.068 \text{ m} = 106.8 \text{ cm}$$
 
-## 3. Quadrifilar Helix (QFH) theory
+So each leg including feedwire ≈ **53.4 cm** (leg length must include the connecting wire back to the coax; keep ≤ ~1.5 cm).
 
-Four helical elements wound on a common cylinder, with adjacent elements fed **90° apart in phase**:
+Design notes taken from the guide, which our build follows:
 
-$$\phi_0 = 90^\circ = \frac{\pi}{2}$$
+- **Wing angle**: bend the two legs into a **120°** included angle ("wings") — turns the figure-8 pattern into a filled/"figure-0" pattern, filling in the deep side nulls for off-axis passes.
+- **Element material**: 1/8 in (3.25 mm) aluminum rods; do **not** use ferromagnetic materials (skin-effect losses).
+- **Feedpoint**: choc-block (terminal block) at centre; 50 or 75 Ω coax; N or PL-259/BNC conventions as needed.
+- **Orientation**: horizontal, pointed N–S (peak pattern N/S, rising/setting passes start and end at opposite horizons).
+- **Height matters**: the guide ran 8 m AGL on a mast; nVHF penetration is good but clear horizon >> ideal.
+- **Coax count**: the guide shows how much cable loss shows up; the reference used ~25 m of mixed cable (RG-213/H-2000/RG-214/RG-58) and still decoded; we keep the run short and preferably good cable.
 
-Elements 0 and 2 are one orthogonal pair; 1 and 3 the other. The phase combination produces a **circularly polarized** wavefront:
+## 3. QFH — design values used (137.5 MHz, PVC build)
 
-- Main lobe is along the cylinder axis — ideal for near-overhead satellite passes.
-- RHCP by default; mirror the winding for LHCP.
-- A CP antenna receives CP signals of either handedness with a **3 dB polarization-mismatch penalty**; a linear antenna pays that 3 dB always.
-- Key quality metric: **axial ratio** (major/minor axis of the polarization ellipse). Ideal = 1 (0 dB). Hand fabrication trades some axial ratio for build simplicity.
+Reference: the PVC QFH build (137.5 MHz); dimensions from the jcoppens QFH calculator (http://jcoppens.com/ant/qfh/calc.en.php) with the Hole Cutout Guide for the hole drilling template.
 
-## 4. Friis transmission equation / link budget
+Structure: two coax-driven half-wave loops on **one cylinder axis**, phased in quadrature → RHCP end-fire along the axis.
+
+- **Body**: 2 in PVC tube, ~4 ft (two 2 ft sections joined), radius 30.55 mm.
+- **Supports**: 1/2 in PVC — 3 × **292 mm** (outer loop, "blue"), 3 × **276.1 mm** (inner loop, "green").
+
+Support midpoint positions (measured from the edge of the 2 in body):
+
+$$m_{outer} = \frac{292}{2} - 30.55 \approx 115.4 \text{ mm}, \qquad m_{inner} = \frac{276.1}{2} - 30.55 \approx 107.6 \text{ mm}$$
+
+- **Elements**: 12 AWG solid copper wire (~15 ft total); two loops (outer "Big Loop" B1/B2, inner "Small Loop" S1/S2) driven in 90° phase offset (one loop is fed directly and the second via a shorted stub/section producing the quadrature).
+- **Polarization handedness**: winding counter-clockwise seen from above = RHCP (the satellite handedness — do not mirror the layout).
+- **Wiring topology (reference build)**:
+  - Top: S1 and B1 to coax centre/inner conductor; S2 to coax shield.
+  - Bottom: S1, B1(?), B2 to coax shield (as written in the guide — this exact junction is disputed in the comments there; the circuit shows dots only at true junctions, not crossings — use the guide's wiring diagram as the source of truth, not the prose).
+  - Important: the coax cable is electrically **part of the antenna** (an *infinite balun*), not just a feedline attached to it.
+- **Materials/practical**: drill a clean straight hole (press/dremel), tight fit for good glue strength (poor fit → failed joints), PVC cement solvent welds, 12 AWG is heavy — pliers + flux + lots of heat, tag/marker tape positions to keep outer/inner straight.
+- The guide's measured performance: signal visible from ~9° elevation; good pass 10–15 min; correct/incorrect axial ratio changes decode quality dramatically.
+
+### 3.1. QFH performance expectation
+
+Depending on build accuracy, a real QFH gives perhaps **1–2 dB** over a simple dipole — i.e., it is not automatically the better antenna in absolute terms, but it always has the right polarization for the satellite (omni along the axis, sharp on the horizon). This matches the project's observation of noise/latency in bidirectional tests.
+
+## 4. Polarization and cross-polarization
+
+Reference table (cross-pol isolation between polarization pairs, dB):
+
+| X-pol ↓ / Rx → | V | H | RHCP | LHCP |
+| :--- | :--- | :--- | :--- | :--- |
+| Vertical | 0 | −20 | −3 | −3 |
+| Horizontal | −20 | 0 | −3 | −3 |
+| RHCP | −3 | −3 | 0 | −20 |
+| LHCP | −3 | −3 | −20 | 0 |
+
+Rules of thumb:
+
+- Any linear antenna pays **3 dB** against a CP satellite signal, always.
+- The wrong CP handedness costs ~**20 dB** — catastrophic.
+- Opposite linear costs ~**20 dB**.
+
+**Practical consequence (from the V-dipole guide):** a horizontal V-dipole rejects all the vertical-polarized broadcast/aeronautical RFI (e.g., planes at 10–12 km at 25 W transmitting AM on aeronautical allocations near 136–138 MHz) by ~20 dB — a free noise-figure win. A QFH does **not** offer this rejection; it is −3 dB to both horizontal and vertical RFI. This is why a simple horizontal V-dipole is a perfectly rational antenna for this band.
+
+**Axial ratio** (quality of CP):
+
+- Perfect CP: AR = 1 (0 dB).
+- AR better than **1 dB** is a good QFH; real DIY builds often end up elliptical.
+- Test method (from the V-dipole guide): transmit using the CP antenna, measure received signal on a linear dipole in the two orthogonal orientations at far-field; the ratio of the two measured powers = axial ratio.
+
+**Fraunhofer (far-field) distance** for that check:
+
+$$L_{FF} = \frac{(2D)^2}{\lambda}$$
+
+where D is the largest antenna dimension. For the QFH (~0.6–0.7 m overall height) at 137 MHz, \(L_{FF} \approx (2\times0.6)^2/2.19 \approx 0.66\) m — but practically, keep several λ distance for a clean measurement.
+
+## 5. Friis transmission equation / link budget
 
 Power received over a free-space path:
 
@@ -51,76 +122,71 @@ $$\mathrm{FSPL} = 20\log_{10}(d_{km}) + 20\log_{10}(f_{MHz}) + 32.45$$
 
 Worked example (137 MHz, slant range 800 km):
 
-$$\mathrm{FSPL} = 20\log_{10}(800) + 20\log_{10}(137) + 32.45 \approx 133 \text{ dB}$$
+$$\mathrm{FSPL} \approx 58.1 + 42.7 + 32.45 \approx 133 \text{ dB}$$
 
-Link-budget intuition for the local tests: the ~71 dB SNR only holds close-in; it falls with the square of distance per Friis.
+Reference performance points (from the V-dipole guide measurements):
 
-## 5. Noise and SNR
+- Minimum S/N ≈ **22 dB** → clean, noise-free picture (below this: black noise bars).
+- Peak pass S/N ≈ **45 dB** (headroom during the overhead phase).
+- A bare-bones DVB-T dongle + ~25 m of mixed coax decoded NOAA pictures — the antenna and LNA matter more than the receiver.
+
+## 6. Noise and SNR
 
 Thermal noise floor (kTB):
 
-$$N = k T B, \qquad k = 1.381\times10^{-23} \text{ J/K}, \; T \approx 290 \text{ K}$$
+$$N = k\, T\, B, \qquad k = 1.381\times10^{-23} \text{ J/K}, \; T \approx 290 \text{ K}$$
 
 | Bandwidth | N | N (dBm) |
 | :--- | :--- | :--- |
-| 40 kHz | 1.6×10⁻¹⁶ W | ≈ −128 dBm |
-| 2 MHz | 8.0×10⁻¹⁵ W | ≈ −111 dBm |
-
-Signal-to-noise ratio:
+| 40 kHz (APT-class passband) | 1.6×10⁻¹⁶ W | ≈ −128 dBm |
+| 2 MHz (HackRF obs) | 8.0×10⁻¹⁵ W | ≈ −111 dBm |
 
 $$\mathrm{SNR_{dB}} = 10\log_{10}\left(\frac{P_{signal}}{P_{noise}}\right)$$
 
-The ~71 dB figure from the V-Dipole close-range test is one measurement at one range/orientation — not a stable spec; it degrades with distance, off-axis angle, cable loss and local RFI (as seen in the two-way tests).
+The ~71 dB figure from the V-Dipole close-range test is one measurement at one range/orientation — not a spec; it degrades with range, off-axis angle, cable loss and RFI, as observed in the two-way tests.
 
-**Noise contributors to chase:** local RFI, SDR gain staging (RF/IF/BB), receiver bandwidth, cable loss, impedance mismatch, antenna alignment, grounding and shielding.
+**Noise contributors** (observed sources to chase): local RFI, SDR gain staging (RF/IF/BB), aeronautical AM transmitters, ORBCOMM, cable loss, impedance mismatch, antenna alignment, grounding/shielding, and USB/clock noise from the SDR itself.
 
-## 6. Doppler shift
+## 7. Doppler shift
 
-A LEO weather satellite (NOAA class, ~800–850 km, v ≈ 7.4 km/s) shifts the received frequency by:
+LEO weather satellites run v ≈ 7.4 km/s at ~800–850 km altitude. Maximum shift at 137 MHz:
 
-$$\Delta f = \frac{v}{c}\, f$$
+$$\Delta f = \frac{v}{c} f \approx \frac{7.4\times10^3}{3\times10^8}\times 137\times10^6 \approx \pm 3.4 \text{ kHz}$$
 
-At 137 MHz:
+Pass structure: right-rising (+3.4 kHz) → overhead zero-Doppler (crossing) → right-setting (−3.4 kHz). GPredict/STK compute the pass curve so the SDR can be tuned ahead of time or continuously corrected; uncompensated, the tone drifts through a WFM demodulator and degrades decode near pass boundaries.
 
-$$\Delta f \approx \frac{7.4\times10^3}{3\times10^8}\times 137\times10^6 \approx \pm 3.4 \text{ kHz}$$
+APT signal shape: an FM carrier modulated by a **2400 Hz subcarrier**; the audio WAV is resampled to **11025 Hz** before WXtoImg (`sox <in> <out> rate 11025`), and WXtoImg does a PLL / map-slant calibration pass (disable PLL in Options → Image → map slant, then re-enable) to settle on the decoder's AFC.
 
-rising pass = frequency shifted high, peak = zero crossing, setting = shifted low. Hence the GPredict workflow: compute the pass schedule and Doppler curve ahead of time and pre-tune the SDR.
+## 8. Sampling and GNU Radio chain theory
 
-## 7. Sampling and GNU Radio chain theory
+- **Nyquist:** fₛ > 2·fₘₐₓ. The 48 kHz audio chain is comfortable for APT-class bandwidths; the SDR chain runs at 1.92 MSps.
+- Our flowgraphs: 48 kHz audio → **Rational Resampler, interpolation 40** → 48 kHz × 40 = **1.92 MHz** baseband rate → osmocom Sink (HackRF One, 135.602 MHz), RF/IF/BB gains in-flowgraph, parallel QT GUI FFT sink.
+- Because the whole chain is a flowgraph, every parameter is re-tunable in software — see [GNU Flowchart.md](GNU%20Flowchart.md).
+- Frequency Mod block ≈ phase deviation ∝ message: \(\phi(t) = 2\pi f_c t + 2\pi k_f \int_0^t m(\tau)\,d\tau\) with k_f the block sensitivity parameter.
+- Carson's rule (sets the OTA bandwidth you must leave room for):
 
-- **Nyquist criterion:** the sample rate must exceed twice the highest frequency present, fₛ > 2 fₘₐₓ.
-- Audio chain: 48 kHz audio → **Rational Resampler, interpolation 40** → 48 kHz × 40 = 1.92 MHz baseband rate feeding the osmocom Sink.
-- The osmocom (gr-osmosdr) Sink drives the HackRF One: center 135.602 MHz, 1.92 MSps, RF/IF/BB gains set in-flowgraph.
-- Everything is a software flowgraph, so all parameters are re-tunable without touching hardware — see [GNU Flowchart.md](GNU%20Flowchart.md).
-- Frequency Mod implements a phase deviation proportional to the message: \(\phi(t) = 2\pi f_c t + 2\pi k_f \int_0^t m(\tau)\,d\tau\), with k_f the block sensitivity.
-
-## 8. FM theory and Carson's rule
-
-For \(s(t) = A_c \cos(2\pi f_c t + \beta \sin 2\pi f_m t)\):
-
-$$\beta = \frac{\Delta f}{f_m}, \qquad \mathrm{BW} \approx 2(\Delta f + f_m)$$
-
-Deviation and bandwidth must stay inside the configured HackRF/OSMOCOM bandwidth and what SDR Console shows as used spectrum.
+$$\mathrm{BW} \approx 2\left(\Delta f + f_m\right)$$
 
 ## 9. Impedance matching, SWR and mismatch loss
 
 $$\Gamma = \frac{Z_L - Z_0}{Z_L + Z_0}, \qquad \mathrm{SWR} = \frac{1+|\Gamma|}{1-|\Gamma|}$$
 
-$$\text{Return loss} = -20\log_{10}|\Gamma|, \qquad L_{mm} = -10\log_{10}\left(1 - |\Gamma|^2\right)$$
+$$\text{Return loss} = -20\log_{10}|\Gamma|, \qquad L_{mm} = -10\log_{10}\left(1-|\Gamma|^2\right)$$
 
-Practical fixes: 50 Ω everywhere, short good feedline, solid joints, ferrite chokes on USB/DC leads to kill common-mode noise, and symmetric hand-bent elements.
+Targets: keep SWR ≤ 1.5:1 from 137–138 MHz, i.e. |Γ| ≤ 0.2 (mismatch loss ≈ 0.2 dB). Hand-bent elements won't hit this exactly; compensate with element-length trimming and feed-line chokes, not with hope.
 
-## 10. NOAA APT basics (137 MHz band)
+## 10. APT basics and decode requirements
 
-- APT output is an FM carrier modulated by a 2400 Hz subcarrier carrying image lines (2 lines/s, ~256 px/line).
-- Local observations centred on 135.6 MHz; satellite observations near 137.1 / 137.9 MHz.
-- Decode path verified offline against a pre-recorded NOAA transmission from SatNogs via SatDump / WXtoImg — a dry run, not a live capture.
+- NOAA APT: satellite image subcarrier on an FM carrier in 137–138 MHz; two lines per second.
+- The signal appears as **nine distinct peaks** on a wideband waterfall — that is how you find it by eye.
+- Calibration: WXtoImg map-slant + PLL sync; sox resample to 11025 Hz; GPredict ephemeris + TLE refresh in LTE (Two-Line Element) — the VHF guide noted the instructable's "LTE" is really TLE.
+- Required S/N ≈ 22 dB (black bars below that); 45 dB typical at culmination.
 
-## 11. Currently measured numbers (from the report)
+## 11. Currently measured numbers (from the project report)
 
 | Item | Value / status |
 | :--- | :--- |
-| V-Dipole close-range SNR | ≈ 71 dB (single test) |
+| V-Dipole close-range SNR | ≈ 71 dB (single test, not spec) |
 | QFH ↔ V-Dipole link | Audio both directions; noise/latency present |
 | Local obs band | ≈ 135.6 MHz; 137.1 / 137.9 MHz also observed |
 | SDR | HackRF One primary; Pluto SDR; USRP B200 Mini |
@@ -129,17 +195,25 @@ Practical fixes: 50 Ω everywhere, short good feedline, solid joints, ferrite ch
 
 ## 12. Open questions / things to refine
 
-- [ ] Exact element dimensions and spacing as cut
+- [ ] Exact dimensions actually cut (dipole arms: 53.4 cm reference, minus feedtail; QFH: 292 / 276.1 / 115.4 / 107.6 mm reference — what did we actually cut?)
 - [ ] Measured SWR of both antennas at 137 MHz
-- [ ] Feedline type, length, and feedpoint impedance
+- [ ] Feedline type, length, feedpoint impedance (choc-block vs direct solder)
 - [ ] Latency vs buffer size / sample rate
-- [ ] RFI survey — which noise source is dominant
-- [ ] QFH axial-ratio estimate from the two-direction link test
+- [ ] Dominant noise source in the two-way tests (aeronautical AM, ORBCOMM, USB clock?)
+- [ ] QFH axial-ratio estimate from two-direction link test
 - [ ] Doppler compensation plan for the first live pass
+- [ ] Measured gain/SNR vs elevation on a real pass vs 22 dB threshold
 
 ## 13. References
 
+<<<<<<< HEAD
 - [GS (3).pdf](<GS (3).pdf>) — project report
 - [Construction.md](Construction.md) — build photos and video
+=======
+- [GS (3).pdf](<GS (3).pdf>) — project report (Megha Jha, ECE, Central University of Jammu)
+- DIY 137MHz WX-sat V-dipole antenna — Adam-9A4QV — dipole cut formula (147/F), 120° wings, polarization/RFI analysis, 22 dB threshold, pass tables
+- NOAA Satellite Signals with a PVC QFH Antenna — spacemanlabs — QFH geometry (jcoppens calculator), PVC build workflow, wiring, software chain (GPredict / GQRX / sox / WXtoImg), 9° horizon threshold
+- [Construction.md](Construction.md) — build photos and videos
+>>>>>>> 589a8a9 (Update theory.md with reference design values from build guides)
 - [GNU Flowchart.md](GNU%20Flowchart.md) — AM/FM transmit flowgraphs
-- [hardware](hardware) / [software](software) / [results](results) — hardware, software and methodology notes
+- [hardware](hardware) / [software](software) / [results](results) — hardware/software/methodology notes
