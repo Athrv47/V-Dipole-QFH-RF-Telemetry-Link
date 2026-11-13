@@ -1,0 +1,13 @@
+## 💻 Software Pipeline & Tools
+
+| Tool | Role in Ground Station Pipeline |
+| :--- | :--- |
+| **GNU Radio** | Block-based RF signal processing, custom filtering, demodulation, and signal-flow experimentation[cite: 6]. |
+| **SDR Console** | Real-time frequency tuning, spectrum/waterfall observation, and audio monitoring[cite: 6, 7]. |
+| **GPredict & STK** | Satellite pass prediction, orbit visualization, and tracking to account for Doppler shift[cite: 6, 7, 10]. |
+| **SatDump / WXtoImg** | Signal demodulation, framing, and offline decoding of satellite data[cite: 6, 8]. |
+
+* **GNU Radio Flowgraph Snapshot:**  
+  *[Insert screenshot of your GNU Radio flowgraph here]*[cite: 6]
+* **SDR Console Waterfall View (135.6 MHz Observation):**  
+  *[Insert screenshot of waterfall display here]*[cite: 8, 10]
