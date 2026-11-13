@@ -1,13 +1,44 @@
 ## 💻 Software Pipeline & Tools
 
-| Tool | Role in Ground Station Pipeline |
-| :--- | :--- |
-| **GNU Radio** | Block-based RF signal processing, custom filtering, demodulation, and signal-flow experimentation. |
-| **SDR Console** | Real-time frequency tuning, spectrum/waterfall observation, and audio monitoring. |
-| **GPredict & STK** | Satellite pass prediction, orbit visualization, and tracking to account for Doppler shift. |
-| **SatDump / WXtoImg** | Signal demodulation, framing, and offline decoding of satellite data. |
+The ground-station telemetry link is entirely software-defined: there is no fixed-function receiver in the chain, only an antenna, an SDR, and a processing graph running on a computer. The basic chain is antenna → HackRF One → GNU Radio flowgraph → demodulated audio → analysis or decoding, with tracking tools feeding pass timing and frequency ahead of each observation. Build flowgraphs are in [GNU Flowchart.md](GNU%20Flowchart.md); the full report is in [GS (3).pdf](<GS (3).pdf>).
 
-* **GNU Radio Flowgraph Snapshot:**
-  *[Insert screenshot of your GNU Radio flowgraph here]*
-* **SDR Console Waterfall View (135.6 MHz Observation):**
-  *[Insert screenshot of waterfall display here]*
+| Tool | Role in the pipeline |
+| :--- | :--- |
+| **GNU Radio** | Block-based signal processing, filtering, demodulation and signal-flow experimentation |
+| **SDR Console** | Real-time frequency tuning, spectrum/waterfall observation, audio monitoring |
+| **GPredict & N2YO** | Satellite pass prediction, scheduling, tracking |
+| **STK** | Orbit/mission visualization and path analysis |
+| **SatDump / WXtoImg** | Signal demodulation, framing and decoding of satellite data |
+
+### GNU Radio
+
+GNU Radio is the processing core of the project. Instead of fixed receivers, the entire signal chain — source, gain staging, modulation, resampling, sink — is assembled as a flowgraph of interconnected blocks, which GNU Radio compiles and executes as Python (here with the QT GUI generator option, giving each experiment a live FFT display next to the command sink). Because the pipeline lives in software, every parameter that matters can be re-tuned in minutes: center frequency, sample rate, gain staging, filter bandwidth. That is what lets the same laptop host both a local audio link test and a full satellite reception workflow.
+
+We use two flowgraphs, both built by Y Kishan Reddy and both targeting 135.602 MHz through an osmocom Sink (the gr-osmosdr interface to the SDR):
+
+* **AM_Transmit** — a 48 kHz audio source is scaled, frequency-modulated (carrier offset set by the Frequency Mod block), interpolated 40× by a rational resampler and pushed to the osmocom Sink, with a parallel QT GUI FFT sink for spectrum monitoring.
+* **FM_Transmit** — the 48 kHz audio is carried as a complex baseband signal (Float To Complex), gained, offset (Add Const), interpolated 40× and driven into the same kind of osmocom Sink with its own QT GUI sink.
+
+Both flowgraphs, including the exact gain and sample-rate settings, are reproduced in [GNU Flowchart.md](GNU%20Flowchart.md).
+
+### HackRF One
+
+The SDR used for the live audio-telemetry work is the **HackRF One** — an open 1–6000 MHz half-duplex transceiver. It is a natural fit for the VHF work here: cheap enough to treat as laboratory plumbing, open in its firmware and host interface, and fully supported by gr-osmosdr/osmocom Sink from GNU Radio, so the flowgraphs above drive the radio directly. When operated from the flowgraphs the HackRF receives its center frequency (135.602 MHz), sample rate (1.92 MSps), RF/IF/baseband gain staging and async command channel entirely from software.
+
+### SDR Console
+
+SDR Console is the monitoring bench rather than the engine: real-time spectrum and waterfall display around the tuned frequency, quick visual confirmation of signal presence, and live audio listening during reception tests. It complements — not replaces — the GNU Radio pipeline.
+
+### GPredict & N2YO
+
+Tracking bridges orbital prediction and the RF setup. GPredict provides pass prediction, visibility windows and Doppler tracking; N2YO gives the same from the browser for quick checks. Because a satellite pass lasts only a few minutes and the relative motion shifts the observed frequency continuously, having the pass schedule and the expected Doppler curve in advance is what makes a timed reception attempt possible.
+
+### STK
+
+STK is used for mission and orbit visualization — the 3D geometry of a pass, ground-station look angles and path over the sky — useful for planning and for communicating a pass to the team.
+
+### SatDump / WXtoImg
+
+The decode end of the chain. SatDump handles demodulation, framing and protocol-specific decoding once a signal is captured; WXtoImg converts the resulting data into imagery. The decoding workflow was validated offline against a pre-recorded NOAA transmission sourced from a SatNogs observation — a dry run that proved the software chain end-to-end short of a live capture by our own antenna.
+
+See [GNU Flowchart.md](GNU%20Flowchart.md) for the AM/FM transmit flowgraphs shown in the repo, and [GS (3).pdf](<GS (3).pdf>) for the full experimental report and results.
